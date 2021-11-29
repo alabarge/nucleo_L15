@@ -90,7 +90,7 @@
 
    static UART_HandleTypeDef *uart = NULL;
    static uint8_t esc = 0;
-   
+
 // 7 MODULE CODE
 
 // ===========================================================================
@@ -365,7 +365,7 @@ void xlprint_isr(void) {
 // 7.3.4   Data Structures
 
    uint8_t  ch;
-   
+
 // 7.3.5   Code
 
    // Up-Arrow is 0x5B 0x41
@@ -374,15 +374,14 @@ void xlprint_isr(void) {
    // read the incoming character
    ch = uart->Instance->DR;
    if (isprint(ch) || ch == 0x0a) {
-      if (esc == 1) 
+      if (esc == 1)
          esc = 0;
-      else if (ch == 0x5B) 
+      else if (ch == 0x5B)
          esc = 1;
       else xlprint("%c", ch);
+      // send character to CLI
+      cli_put(&gc.cli, (char)ch);
    }
-
-   // send character to CLI
-   cli_put(&gc.cli, (char)ch);
 
 } // end xlprint_isr()
 
@@ -411,7 +410,7 @@ void xlprint_ack(void) {
 // 7.4.4   Data Structures
 
    uint8_t  ch;
-   
+
 // 7.4.5   Code
 
    // read the incoming character
